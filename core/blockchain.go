@@ -9,7 +9,7 @@ type Blockchain struct {
 func NewBlockchain(genesis *Block) (*Blockchain, error) {
 	bc := &Blockchain{
 		headers: []*Header{},
-		store: NewMemorystore(),
+		store:   NewMemorystore(),
 	}
 	bc.validator = NewBlockValidator(bc)
 	err := bc.addBlockWithoutValidation(genesis)
@@ -22,21 +22,22 @@ func (bc *Blockchain) SetValidator(v Validator) {
 }
 
 func (bc *Blockchain) AddBlock(b *Block) error {
+	if err := bc.validator.ValidateBlock(b); err != nil {
+		return err
+	}
 
-	return nil
+	return bc.addBlockWithoutValidation(b)
 }
 
 func (bc *Blockchain) HashBlock(height uint32) bool {
-	return height < bc.Height()
+	return height <= bc.Height()
 }
 
 func (bc *Blockchain) Height() uint32 {
 	return uint32(len(bc.headers) - 1)
 }
 
-
 func (bc *Blockchain) addBlockWithoutValidation(b *Block) error {
 	bc.headers = append(bc.headers, b.Header)
 	return bc.store.Put(b)
 }
-
