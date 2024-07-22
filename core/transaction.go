@@ -1,6 +1,10 @@
 package core
 
-import "github.com/GiorgiMakharadze/modular-blockchain-golang/crypto"
+import (
+	"fmt"
+
+	"github.com/GiorgiMakharadze/modular-blockchain-golang/crypto"
+)
 
 type Transaction struct {
 	Data []byte
@@ -17,6 +21,18 @@ func (tx *Transaction) Sign(privKey crypto.PrivateKey) error {
 
 	tx.PublicKey = privKey.PublicKey()
 	tx.Signature = sig
+
+	return nil
+}
+
+func (tx *Transaction) Verify() error {
+	if tx.Signature == nil {
+		return fmt.Errorf("transaction has no signature")
+	}
+
+	if !tx.Signature.Verify(tx.PublicKey, tx.Data) {
+		return fmt.Errorf("invalid transaction signature")
+	}
 
 	return nil
 }
