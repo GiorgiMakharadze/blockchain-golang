@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHeader_Encode_Decode(t *testing.T) {
+func TestHeaderEncodeDecode(t *testing.T) {
 	h := &Header{
 		Version:   1,
 		PrevBlock: types.RandomHash(),
@@ -26,7 +26,7 @@ func TestHeader_Encode_Decode(t *testing.T) {
 	assert.Equal(t, h, hDecode)
 }
 
-func TestBlock_Encode_Decode(t *testing.T) {
+func TestBlockEncodeDecode(t *testing.T) {
 	b := &Block{
 		Header: Header{
 			Version:   1,
